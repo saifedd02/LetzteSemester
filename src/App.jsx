@@ -16,6 +16,9 @@ export default function App() {
     studySessions,
     updateModuleProgress,
     logStudySession,
+    deleteSession,
+    editSession,
+    addManualSession,
     getNeglectedModules,
   } = useStudyData();
 
@@ -23,7 +26,12 @@ export default function App() {
   const { todos, addTodo, toggleTodo, removeTodo, editTodo } = useTodos();
 
   const [page, setPage] = useState('dashboard');
-  const [showTimer, setShowTimer] = useState(false);
+  const [showTimer, setShowTimer] = useState(() => {
+    // Auto-open timer if one was running
+    try {
+      return !!localStorage.getItem('chrono-timer-state');
+    } catch { return false; }
+  });
   const [timerModule, setTimerModule] = useState(null);
   const [detailModule, setDetailModule] = useState(null);
 
@@ -54,6 +62,7 @@ export default function App() {
           progress={progress}
           streak={streak}
           todos={todos}
+          studySessions={studySessions}
           onSelectModule={setDetailModule}
           getNeglectedModules={getNeglectedModules}
           onStartTimer={startTimer}
@@ -96,6 +105,9 @@ export default function App() {
           module={detailModule}
           progress={progress[detailModule.id]}
           onUpdate={updateModuleProgress}
+          onDeleteSession={deleteSession}
+          onEditSession={editSession}
+          onAddManualSession={addManualSession}
           onStartTimer={startTimer}
           onClose={() => setDetailModule(null)}
         />

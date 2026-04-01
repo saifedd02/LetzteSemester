@@ -83,12 +83,76 @@ export function useStudyData() {
       .reduce((sum, s) => sum + s.minutes, 0);
   };
 
+  const deleteSession = (moduleId, sessionIndex) => {
+    const sessions = progress[moduleId]?.sessions || [];
+    const session = sessions[sessionIndex];
+    if (!session) return;
+
+    const newSessions = sessions.filter((_, i) => i !== sessionIndex);
+    const newTotal = newSessions.reduce((sum, s) => sum + s.minutes, 0);
+
+    updateModuleProgress(moduleId, {
+      totalMinutes: newTotal,
+      sessions: newSessions,
+      lastStudied: newSessions.length > 0 ? newSessions[newSessions.length - 1].date : null,
+    });
+
+    // Also remove from global sessions list
+    setStudySessions((prev) => {
+      const idx = prev.findIndex(
+        (s) => s.moduleId === moduleId && s.date === session.date && s.minutes === session.minutes
+      );
+      if (idx === -1) return prev;
+      return [...prev.slice(0, idx), ...prev.slice(idx + 1)];
+    });
+  };
+
+  const editSession = (moduleId, sessionIndex, newMinutes) => {
+    const sessions = progress[moduleId]?.sessions || [];
+    const oldSession = sessions[sessionIndex];
+    if (!oldSession) return;
+
+    const newSessions = sessions.map((s, i) =>
+      i === sessionIndex ? { ...s, minutes: newMinutes } : s
+    );
+    const newTotal = newSessions.reduce((sum, s) => sum + s.minutes, 0);
+
+    updateModuleProgress(moduleId, {
+      totalMinutes: newTotal,
+      sessions: newSessions,
+    });
+
+    // Update global sessions list
+    setStudySessions((prev) =>
+      prev.map((s) =>
+        s.moduleId === moduleId && s.date === oldSession.date && s.minutes === oldSession.minutes
+          ? { ...s, minutes: newMinutes }
+          : s
+      )
+    );
+  };
+
+  const addManualSession = (moduleId, minutes, date) => {
+    const dateStr = date || new Date().toISOString();
+
+    updateModuleProgress(moduleId, {
+      lastStudied: dateStr,
+      totalMinutes: (progress[moduleId]?.totalMinutes || 0) + minutes,
+      sessions: [...(progress[moduleId]?.sessions || []), { date: dateStr, minutes }],
+    });
+
+    setStudySessions((prev) => [...prev, { moduleId, minutes, date: dateStr }]);
+  };
+
   return {
     progress,
     streak,
     studySessions,
     updateModuleProgress,
     logStudySession,
+    deleteSession,
+    editSession,
+    addManualSession,
     getNeglectedModules,
     getStudyTimeThisWeek,
     getModuleStudyTimeThisWeek,
