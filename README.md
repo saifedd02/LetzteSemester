@@ -1,6 +1,6 @@
 # Studienplaner
 
-Persönliche Webanwendung zur Organisation eines Studiensemesters. Sie verbindet eine Modulübersicht mit Lernzeiten, Kalender und Aufgabenliste.
+Persönliche Webanwendung, ursprünglich für das Sommersemester 2026 entwickelt. Sie verbindet eine Modulübersicht mit Lernzeiten, Kalender und Aufgabenliste.
 
 ## Funktionen
 
@@ -38,4 +38,4 @@ Der Build schreibt die statische Anwendung in `docs/`. Dieser Ordner enthält er
 
 ## Stand
 
-Eigenes Studienprojekt. Der Produktionsbuild wurde am 25. Oktober 2026 geprüft. Der Linter meldet noch Probleme bei React-Regeln und bezieht derzeit auch erzeugte Dateien ein. Eine automatisierte Testsuite ist noch nicht vorhanden.
+Eigenes Studienprojekt. Produktionsbuild und Linter wurden am 25. Oktober 2026 erfolgreich geprüft. Die vorbelegten Module und Leistungspunkte stammen aus der damaligen Semesterplanung und stellen keinen aktuellen Studiennachweis dar. Eine automatisierte Testsuite ist noch nicht vorhanden.

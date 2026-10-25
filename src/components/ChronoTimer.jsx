@@ -26,28 +26,24 @@ function saveTimerState(state) {
 
 export default function ChronoTimer({ selectedModule, onSessionComplete, onClose }) {
   // Restore from localStorage if a timer was running
-  const saved = useRef(loadTimerState());
+  const [saved] = useState(loadTimerState);
 
   const [moduleId, setModuleId] = useState(() => {
-    if (saved.current) return saved.current.moduleId;
+    if (saved) return saved.moduleId;
     return selectedModule?.id || MODULES[0].id;
   });
 
   // startedAt: timestamp when current run segment started (null if not running or paused)
   // accumulated: seconds accumulated from previous run segments (before pauses)
-  const [startedAt, setStartedAt] = useState(() => saved.current?.startedAt || null);
-  const [accumulated, setAccumulated] = useState(() => saved.current?.accumulated || 0);
-  const [isRunning, setIsRunning] = useState(() => saved.current?.isRunning || false);
-  const [isPaused, setIsPaused] = useState(() => saved.current?.isPaused || false);
+  const [startedAt, setStartedAt] = useState(() => saved?.startedAt || null);
+  const [accumulated, setAccumulated] = useState(() => saved?.accumulated || 0);
+  const [isRunning, setIsRunning] = useState(() => saved?.isRunning || false);
+  const [isPaused, setIsPaused] = useState(() => saved?.isPaused || false);
 
   const [displayElapsed, setDisplayElapsed] = useState(0);
   const rafRef = useRef(null);
 
   const currentModule = MODULES.find((m) => m.id === moduleId);
-
-  useEffect(() => {
-    if (!saved.current && selectedModule) setModuleId(selectedModule.id);
-  }, [selectedModule]);
 
   // Calculate current elapsed time
   const getElapsed = useCallback(() => {
@@ -66,8 +62,6 @@ export default function ChronoTimer({ selectedModule, onSessionComplete, onClose
       };
       rafRef.current = requestAnimationFrame(tick);
       return () => cancelAnimationFrame(rafRef.current);
-    } else {
-      setDisplayElapsed(getElapsed());
     }
   }, [isRunning, isPaused, getElapsed]);
 
@@ -139,7 +133,7 @@ export default function ChronoTimer({ selectedModule, onSessionComplete, onClose
     onClose();
   };
 
-  const elapsed = displayElapsed;
+  const elapsed = isRunning && !isPaused ? displayElapsed : accumulated;
   const hrs = Math.floor(elapsed / 3600);
   const mins = Math.floor((elapsed % 3600) / 60);
   const secs = elapsed % 60;

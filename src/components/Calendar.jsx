@@ -29,7 +29,7 @@ function getMonthDays(year, month) {
   return days;
 }
 
-export default function Calendar({ studySessions, calendarEvents, getEventsForDate, onAddEvent, onRemoveEvent, onAddTodo }) {
+export default function Calendar({ studySessions, getEventsForDate, onAddEvent, onRemoveEvent, onAddTodo }) {
   const [viewDate, setViewDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(null);
 

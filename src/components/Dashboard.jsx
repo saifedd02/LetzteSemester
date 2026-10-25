@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { MODULES, CATEGORY_LABELS, TOTAL_CREDITS_DONE, TOTAL_CREDITS_NEEDED } from '../data/modules';
 import { getQuoteOfDay } from '../data/quotes';
 import SemesterCountdown from './SemesterCountdown';
@@ -35,12 +35,11 @@ function PieChart({ progress }) {
   const outerR = 95;
   const innerR = 55;
 
-  let cumAngle = -Math.PI / 2;
-  const slices = data.map((d) => {
+  const slices = data.map((d, index) => {
     const angle = (d.minutes / total) * 2 * Math.PI;
-    const startAngle = cumAngle;
-    cumAngle += angle;
-    const endAngle = cumAngle;
+    const precedingMinutes = data.slice(0, index).reduce((sum, item) => sum + item.minutes, 0);
+    const startAngle = -Math.PI / 2 + (precedingMinutes / total) * 2 * Math.PI;
+    const endAngle = startAngle + angle;
 
     const x1o = cx + outerR * Math.cos(startAngle);
     const y1o = cy + outerR * Math.sin(startAngle);
@@ -154,7 +153,12 @@ export default function Dashboard({ progress, streak, todos, studySessions, onSe
   const categories = ['pflicht', 'semester5', 'wahl1', 'wahl2', 'projekt'];
 
   // Weekly summary
-  const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+  const [now, setNow] = useState(Date.now);
+  useEffect(() => {
+    const timer = setInterval(() => setNow(Date.now()), 60_000);
+    return () => clearInterval(timer);
+  }, []);
+  const weekAgo = now - 7 * 24 * 60 * 60 * 1000;
   const weekMinutes = (studySessions || [])
     .filter((s) => new Date(s.date).getTime() > weekAgo)
     .reduce((sum, s) => sum + s.minutes, 0);
