@@ -1,16 +1,41 @@
-# React + Vite
+# Studienplaner
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Persönliche Webanwendung zur Organisation eines Studiensemesters. Sie verbindet eine Modulübersicht mit Lernzeiten, Kalender und Aufgabenliste.
 
-Currently, two official plugins are available:
+## Funktionen
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Lernfortschritt je Modul festhalten.
+- Lernzeiten mit einem Timer erfassen oder nachtragen.
+- Termine und Aufgaben verwalten.
+- Lernaktivität im Dashboard auswerten.
 
-## React Compiler
+## Technik
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+React 19, JavaScript und Vite. Die Daten werden im Local Storage des Browsers gespeichert. Es gibt keinen Server, kein Benutzerkonto und keine Synchronisation zwischen Geräten. Beim Löschen der Browserdaten gehen die gespeicherten Einträge verloren.
 
-## Expanding the ESLint configuration
+## Lokal starten
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Mit Node.js 22.12 oder neuerer unterstützter Version und npm:
+
+```bash
+npm ci
+npm run dev
+```
+
+Vite zeigt die lokale Adresse im Terminal an.
+
+```bash
+npm run build
+npm run preview
+npm run lint
+```
+
+Der Build schreibt die statische Anwendung in `docs/`. Dieser Ordner enthält erzeugte Dateien; Änderungen werden in `src/` vorgenommen.
+
+## Orientierung
+
+`src/components` enthält Dashboard, Kalender, Aufgaben und Timer. Die Hooks in `src/hooks` verwalten die Daten. `src/App.jsx` verbindet die Ansichten.
+
+## Stand
+
+Eigenes Studienprojekt. Der Produktionsbuild wurde am 25. Oktober 2026 geprüft. Der Linter meldet noch Probleme bei React-Regeln und bezieht derzeit auch erzeugte Dateien ein. Eine automatisierte Testsuite ist noch nicht vorhanden.
